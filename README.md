@@ -1,4 +1,4 @@
-# DISCONTINUED DUE TO CUSTOM ISO'S MIGRATION TO PLAYBOOKS.
+# iiDanL's InstallWindowsWithoutUSB with some bugfixes and little improvements.
 
 
 
