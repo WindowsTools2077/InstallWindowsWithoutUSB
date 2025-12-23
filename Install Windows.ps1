@@ -239,8 +239,18 @@ try {
     Show-Menu
 
     # Check if 7z is available
-    if (-not (Get-Command 7z -ErrorAction SilentlyContinue)) {
-        Write-Host "7-Zip not found! Please install it and add it to your PATH." -ForegroundColor Red
+    $sevenZipPath = $null
+    $localSevenZip = Join-Path -Path $PSScriptRoot -ChildPath "7z.exe"
+    if (Test-Path -Path $localSevenZip) {
+        $sevenZipPath = $localSevenZip
+    } else {
+        $sevenZipCmd = Get-Command -Name "7z.exe" -ErrorAction SilentlyContinue
+        if ($sevenZipCmd) {
+            $sevenZipPath = $sevenZipCmd.Source
+        }
+    }
+    if (-not $sevenZipPath) {
+        Write-Host "7-Zip not found! Put 7z.exe next to this script, or install 7-Zip and add it to your PATH." -ForegroundColor Red
         exit 1
     }
 
@@ -266,7 +276,7 @@ try {
     Write-Host "`nExtracting ISO file..." -ForegroundColor Cyan
     $extractPath = "C:\WindowsInstallation"
     New-Item -ItemType Directory -Path $extractPath -Force -ErrorAction Stop | Out-Null
-    & 7z x -y "-o$extractPath" $isoFile.FullName | Out-Null
+    & $sevenZipPath x -y "-o$extractPath" $isoFile.FullName | Out-Null
 
     # Find the image file
     $wimFile = Join-Path -Path $extractPath -ChildPath "sources\install.wim"
